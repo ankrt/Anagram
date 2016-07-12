@@ -33,7 +33,7 @@ object Anagram {
     if (words.isEmpty) m
     else {
       val key = words.head.sorted
-      val m_ = m + (key -> m.getOrElse(key, List.empty[String]).:+(words.head))
+      val m_ = m + (key -> (m.getOrElse(key, List.empty) :+ words.head))
       buildDictionary(m_, words.tail)
     }
   }
