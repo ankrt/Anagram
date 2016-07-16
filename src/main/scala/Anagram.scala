@@ -7,24 +7,21 @@ import scala.io.Source
 
 object Anagram {
 
-  val wordList = new File(getClass.getClassLoader.getResource("main/resources/dictionary.txt").getPath)
+  val fileName = "dictionary.txt"
 
   def main(args: Array[String]) {
-
-    val words = loadWords(wordList)
-    buildDictionary(Map.empty[String, List[String]], words)
-
+    val words = loadWords(fileName)
+    buildDictionary(Map.empty, words)
   }
 
-  def loadWords(wl: File): List[String] = {
+  def loadWords(name: String): List[String] = {
     try {
-      Source
-        .fromFile(wl)
-        .getLines
-        .map(_.toLowerCase)
-        .toList
+      val f = new File(getClass.getClassLoader.getResource("main/resources/" + name).getPath)
+      Source.fromFile(f).getLines.map(_.toLowerCase).toList
     } catch {
-      case e: FileNotFoundException => List.empty
+      case _ : FileNotFoundException | _ : NullPointerException =>
+        println("Could not open word list.")
+        List.empty
     }
   }
 
@@ -37,5 +34,4 @@ object Anagram {
       buildDictionary(m_, words.tail)
     }
   }
-
 }
