@@ -10,11 +10,16 @@ object Anagram {
   val fileName = "dictionary.txt"
 
   def main(args: Array[String]) {
+
     val words = loadWords(fileName)
     val dictionary = buildDictionary(words, Map.empty)
-    words.foreach(w =>
-      println(w + " => " + findAnagrams(w, dictionary).mkString(", "))
-    )
+
+    dictionary.filter(p => {
+      p._2.length > 1
+    }).foreach(p => {
+      println(p._2.mkString(", "))
+    })
+
   }
 
   def loadWords(name: String): List[String] = {
@@ -36,20 +41,5 @@ object Anagram {
       val m_ = m + (key -> (m.getOrElse(key, List.empty) :+ words.head))
       buildDictionary(words.tail, m_)
     }
-  }
-
-  def findAnagrams(word: String, dictionary: Map[String, List[String]]): List[String] = {
-    val substrings = findSubstrings(word)
-    substrings.flatMap(s => {
-      dictionary.getOrElse(s.sorted, List.empty)
-    }).toList.sorted
-  }
-
-  def findSubstrings(word: String): Set[String] = {
-    val max = word.length
-    val indices = for (i <- 0 until max; j <- 1 to max if i + j <= max) yield (i, j)
-    indices.map(index => {
-      word.substring(index._1, index._1 + index._2)
-    }).toSet
   }
 }
